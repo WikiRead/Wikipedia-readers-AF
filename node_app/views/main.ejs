@@ -23,9 +23,9 @@
             console.log(canvas.toDataURL())
          })
       }
-      window.addEventListener('scroll', function(e) {
-         console.log("triggering")
-      });
+      window.onload = function(){
+         
+      }
       
 
       function PlotGaze(GazeData) {
@@ -41,8 +41,18 @@
          //  document.getElementById("GazeData").innerHTML = "GazeX: " + GazeData.GazeX + " GazeY: " + GazeData.GazeY;
          //  document.getElementById("HeadPhoseData").innerHTML = " HeadX: " + GazeData.HeadX + " HeadY: " + GazeData.HeadY + " HeadZ: " + GazeData.HeadZ;
          //  document.getElementById("HeadRotData").innerHTML = " Yaw: " + GazeData.HeadYaw + " Pitch: " + GazeData.HeadPitch + " Roll: " + GazeData.HeadRoll;
-
-
+         
+         var div = document.getElementsByTagName("embed")[0];
+         div.onscroll = function(e) {
+            console.log("Scrolling");
+         }
+         div.onclick = function(e) {
+            console.log("wheel")
+         }
+         div.onload = function(e) {
+            console.log("inside")
+         }  
+         console.log("welcome")
          var x = GazeData.docX;
          var y = GazeData.docY;
 
@@ -116,7 +126,7 @@
          <p id = "HeadRotData" > </p>
          </p>
       </div> -->
-   <embed id="myEmbed " src="https://www.wikipedia.org/" onscroll="scrolling()">
+   <embed id="myEmbed " src="https://www.wikipedia.org/" width="100%" height="100%">
    <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
    </div>
