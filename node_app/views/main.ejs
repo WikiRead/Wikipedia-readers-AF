@@ -7,7 +7,7 @@
 
 
    <script src="https://api.gazerecorder.com/GazeCloudAPI.js"></script>
-   <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+   <script src="https://code.jquery.com/jquery-1.6.2.min.js"></script>
    <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"> </script>
 
    <style type="text/css">
@@ -18,21 +18,6 @@
    <script type="text/javascript">
    
 //    $.getJSON('http://api.allorigins.win/get?url=https%3A//api.allorigins.win/get%3Furl%3Dhttps%3A//wikipedia.org&callback=?', function (data) {
-// 	$('#output').html(data.contents);
-// });
-         var url = 'http://wikipedia.org'
-         url = "https://api.allorigins.win/get?url="// + encodeURIComponent(url);
-         $.getJSON(url, function (data) {
-            console.log(data)
-            // var d = $("#myEmbed")[0].contentWindow.document; // contentWindow works in IE7 and FF
-            // d.open(); d.close(); // must open and close document object to start using it!
-
-            // // now start doing normal jQuery:
-            // $("body", d).append(data.contents);
-         }).success(function() { console.log("a"); })
-         .error(function() { console.log("a"); })
-         .complete(function() { console.log('g'); });
-
       function PlotGaze(GazeData) {
 
          
