@@ -3,7 +3,7 @@
 
 <head>
    <title>GazeCloudAPI</title>
-
+   
 
 
    <script src="https://api.gazerecorder.com/GazeCloudAPI.js"></script>
@@ -11,22 +11,46 @@
    <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"> </script>
 
    <style type="text/css">
+
+div {
+  border: 1px solid black;
+  width: 200px;
+  height: 100px;
+  overflow: scroll;
+}
+
       body {
          overflow: hidden;
       }
    </style>
    <script type="text/javascript">
 
-      function scrolling() {
-         console.log("triggered")
-         html2canvas(document.body).then(function (canvas) {
-            console.log(canvas.toDataURL())
-         })
+
+var x = 0;
+var y = 0;
+      function myFunction() {
+        document.getElementById("demo").innerHTML = x += 1;
+      }
+      function myFunction1() {
+        document.getElementById("demo1").innerHTML = y += 1;
       }
       window.onload = function(){
-         
+      var frm = document.getElementById("myEmbed").contentWindow;
+      frm.onscroll = function(){
+        console.log("EUREKA");
       }
-      
+
+      }
+      window.addEventListener('keydown', (e) => {
+         if (!e.repeat)
+            console.log(`Key "${e.key}" pressed  [event: keydown]`);
+         else
+            console.log(`Key "${e.key}" repeating  [event: keydown]`);
+      });
+
+      window.addEventListener('wheel', function(){
+         document.getElementById("demo1").innerHTML = y += 1;
+      }, true)
 
       function PlotGaze(GazeData) {
 
@@ -42,17 +66,7 @@
          //  document.getElementById("HeadPhoseData").innerHTML = " HeadX: " + GazeData.HeadX + " HeadY: " + GazeData.HeadY + " HeadZ: " + GazeData.HeadZ;
          //  document.getElementById("HeadRotData").innerHTML = " Yaw: " + GazeData.HeadYaw + " Pitch: " + GazeData.HeadPitch + " Roll: " + GazeData.HeadRoll;
          
-         var div = document.getElementsByTagName("embed")[0];
-         div.onscroll = function(e) {
-            console.log("Scrolling");
-         }
-         div.onclick = function(e) {
-            console.log("wheel")
-         }
-         div.onload = function(e) {
-            console.log("inside")
-         }  
-         console.log("welcome")
+   
          var x = GazeData.docX;
          var y = GazeData.docY;
 
@@ -114,10 +128,10 @@
 </head>
 
 <body>
-   <div class="center">
    <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
    <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
-   </div>
+   <!-- <embed id="myEmbed " src="https://www.wikipedia.org/"> -->
+   
    <!-- <div >
          <p >  
             Real-Time Result:
@@ -126,7 +140,15 @@
          <p id = "HeadRotData" > </p>
          </p>
       </div> -->
-   <embed id="myEmbed " src="https://www.wikipedia.org/" width="100%" height="100%">
+      <!-- <div id="mydiv" onscroll="myFunction()"> -->
+         
+         jhzgdfj sjdhgrfjs dfjshdfg sdfjgsdjf 
+         sndfgrjhs sudfghjs fsjdfgns skudhrf 
+         sjdbfkjsbdf skdjfgh 
+         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/"></iframe>
+      
+         <p>Scrolled <span id="demo">0</span> times.</p>
+         <p>Scrolled <span id="demo1">0</span> times.</p>
    <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
    </div>
