@@ -40,7 +40,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const API_SERVICE_URL = "https://en.wikipedia.org/w/index.php?action=render&title=Main_Page"
+const API_SERVICE_URL = "https://en.wikipedia.org/"
 const API_SERVICE_URL1 = "https://www.wikipedia.org/"
 
 app.use('/json_placeholder', createProxyMiddleware({
@@ -54,8 +54,8 @@ app.use('/json_placeholder', createProxyMiddleware({
       proxyRes.headers['Access-Control-Allow-Origin'] = '*';
       delete proxyRes.headers['x-frame-options'];
       //proxyRes.headers['Domain'] = 'http://localhost:4000';
-      // delete proxyRes.headers['set-cookie'];
-      // delete proxyRes.rawHeaders['Set-Cookie'];
+      delete proxyRes.headers['set-cookie'];
+      delete proxyRes.rawHeaders['Set-Cookie'];
       // // proxyRes.headers['set-cookie'] = proxyRes.headers[
       // //   "set-cookie"
       // // ][0].replace("Secure; ", "");
@@ -105,6 +105,14 @@ app.use('/users', usersRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
+// app.use(function(req, res, next) {
+//   console.log("request", req.originalUrl);
+//   const removeOnRoutes = '/not-wanted-route-part';
+//   // req.originalUrl = req.originalUrl.replace(removeOnRoutes,'');
+//   // req.path = req.path.replace(removeOnRoutes,'');
+//   return next();
+// });
 
 //mongodb connection
 const uri = process.env.ATLAS_URI;

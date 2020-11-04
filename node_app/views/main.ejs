@@ -34,15 +34,7 @@ var y = 0;
       // function myFunction1() {
       //   document.getElementById("demo1").innerHTML = y += 1;
       // }
-      window.onload = function(){
-      console.log('loaded')
-      var frm = document.getElementById("myEmbed").contentWindow;
-      console.log(frm)
-      frm.onscroll = function(){
-        console.log("EUREKA");
-      }
-
-      }
+     
       // window.addEventListener('keydown', (e) => {
       //    if (!e.repeat)
       //       console.log(`Key "${e.key}" pressed  [event: keydown]`);
@@ -55,9 +47,6 @@ var y = 0;
       // }, true)
 
       function PlotGaze(GazeData) {
-
-         
-   
          var x = GazeData.docX;
          var y = GazeData.docY;
 
@@ -161,13 +150,41 @@ var y = 0;
       <!-- <div id="mydiv" onscroll="myFunction()"> -->
          
 
-         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/" style="overflow: hidden; height: 100%;
+         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon_Goni_(2020)" style="overflow: hidden; height: 100%;
          width: 100%; position: absolute;"></iframe>
       
   
    <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
    </div>
+
+
+
+   <script>
+      console.log('loaded')
+      var frm = document.getElementById("myEmbed");
+      //alert(new URL(frm.src).origin);
+      frm.onload = function() {
+      frm = frm.contentWindow;
+      console.log(frm)
+      frm.onclick = function(e){
+         e.preventDefault();
+         console.log('target:', e.target.getAttribute('href'));
+         document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon_Goni_(2020)";
+      }
+      // x = frm.document.getElementsByTagName("a");
+      // for(i=0; i < x.length; i++)
+      // {
+      //    x[i].addEventListener("click", function(e) { 
+      //       //alert(x[i].href);
+      //       console.log('target:', e.target.getAttribute('href'));
+      //    }, false);
+      // }
+      frm.onscroll = function(){
+        console.log("EUREKA");
+      }
+   }
+   </script>
 
 </body>
 
