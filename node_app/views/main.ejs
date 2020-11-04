@@ -151,7 +151,7 @@ var y = 0;
          
 
          <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon_Goni_(2020)" style="overflow: hidden; height: 100%;
-         width: 100%; position: absolute;"></iframe>
+         width: 100%; position: absolute;" ></iframe>
       
   
    <div id="gaze"
@@ -161,16 +161,19 @@ var y = 0;
 
 
    <script>
+      document.getElementById('myEmbed').onload = function() {
+
       console.log('loaded')
       var frm = document.getElementById("myEmbed");
-      //alert(new URL(frm.src).origin);
-      frm.onload = function() {
       frm = frm.contentWindow;
       console.log(frm)
       frm.onclick = function(e){
          e.preventDefault();
          console.log('target:', e.target.getAttribute('href'));
-         document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon_Goni_(2020)";
+         var temp = e.target.getAttribute('href');
+         var key_word = temp.replace("//en.wikipedia.org/wiki/","");
+         console.log(key_word);
+         document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title="+key_word;
       }
       // x = frm.document.getElementsByTagName("a");
       // for(i=0; i < x.length; i++)
@@ -184,6 +187,7 @@ var y = 0;
         console.log("EUREKA");
       }
    }
+//}
    </script>
 
 </body>
