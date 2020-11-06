@@ -12,12 +12,12 @@
 
    <style type="text/css">
 
-div {
+/* div {
   border: 1px solid black;
   width: 200px;
   height: 100px;
   overflow: scroll;
-}
+} */
 
       body {
          overflow: hidden;
@@ -111,34 +111,15 @@ var y = 0;
          })
       }
 
-      // $(document).ready(function () {
-
-      //    console.log('ready')
-      //       var url = 'http://wikipedia.org'
-      //       url = "https://cors-anywhere.herokuapp.com/http://google.com"// + encodeURIComponent(url);
-      //       console.log(url)
-      //       $.getJSON(url, function (data) {
-      //          console.log('ok')
-      //          console.log(data)
-      //          var d = $("#myEmbed")[0].contentWindow.document; // contentWindow works in IE7 and FF
-      //          d.open(); d.closre(); // must open and close document object to start using it!
-
-      //          // now start doing normal jQuery:
-      //          $("body", d).append(data.contents);
-      //       });
-      // });
-      // // document.getElementById('myEmbed').addEventListener('scroll', function () {
-      // //    console.log('scrolling');
-      // // });
 
    </script>
 </head>
 
 <body>
+   <div>
    <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
    <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
-   <!-- <embed id="myEmbed " src="https://www.wikipedia.org/"> -->
-   
+   </div>
    <!-- <div >
          <p >  
             Real-Time Result:
@@ -150,7 +131,7 @@ var y = 0;
       <!-- <div id="mydiv" onscroll="myFunction()"> -->
          
 
-         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon_Goni_(2020)" style="overflow: hidden; height: 100%;
+         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=Typhoon Goni (2020)" style="overflow: hidden; height: 100%;
          width: 100%; position: absolute;" ></iframe>
       
   
@@ -167,6 +148,11 @@ var y = 0;
       var frm = document.getElementById("myEmbed");
       frm = frm.contentWindow;
       console.log(frm)
+      let link = document.createElement("link");
+      link.href = "load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint,shared|skins.vector.styles&only=styles&skin=vector&*";      /**** your CSS file ****/ 
+      link.rel = "stylesheet"; 
+      //link.type = "text/javascript"; 
+      document.getElementById("myEmbed").contentDocument.head.appendChild(link)
       frm.onclick = function(e){
          e.preventDefault();
          console.log('target:', e.target.getAttribute('href'));

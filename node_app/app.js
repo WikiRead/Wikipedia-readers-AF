@@ -41,7 +41,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const API_SERVICE_URL = "https://en.wikipedia.org/"
-const API_SERVICE_URL1 = "https://www.wikipedia.org/"
+const API_SERVICE_URL1 = "https://en.wikipedia.org/w/"
 
 app.use('/json_placeholder', createProxyMiddleware({
   target: API_SERVICE_URL,
@@ -74,11 +74,11 @@ app.use('/json_placeholder', createProxyMiddleware({
 );
 
 
-app.use('/json', createProxyMiddleware({
+app.use('/w', createProxyMiddleware({
   target: API_SERVICE_URL1,
   changeOrigin: true,
   pathRewrite: {
-      [`^/json`]: '',
+      [`^/w`]: '',
   },
   onProxyRes: function (proxyRes, req, res) {
       console.log("recieved");
