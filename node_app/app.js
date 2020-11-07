@@ -50,7 +50,7 @@ app.use('/json_placeholder', createProxyMiddleware({
       [`^/json_placeholder`]: '',
   },
   onProxyRes: function (proxyRes, req, res) {
-      console.log(proxyRes);
+      //console.log(proxyRes);
       proxyRes.headers['Access-Control-Allow-Origin'] = '*';
       delete proxyRes.headers['x-frame-options'];
       //proxyRes.headers['Domain'] = 'http://localhost:4000';
@@ -81,7 +81,7 @@ app.use('/w', createProxyMiddleware({
       [`^/w`]: '',
   },
   onProxyRes: function (proxyRes, req, res) {
-      console.log("recieved");
+      //console.log("recieved");
       proxyRes.headers['Access-Control-Allow-Origin'] = '*';
       //proxyRes.headers['Domain'] = 'http://localhost:4000';
       delete proxyRes.headers['set-cookie'];
