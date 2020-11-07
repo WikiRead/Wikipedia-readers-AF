@@ -3,7 +3,7 @@
 
 <head>
    <title>GazeCloudAPI</title>
-   
+
 
 
    <script src="https://api.gazerecorder.com/GazeCloudAPI.js"></script>
@@ -11,40 +11,16 @@
    <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"> </script>
 
    <style type="text/css">
-
-/* div {
-  border: 1px solid black;
-  width: 200px;
-  height: 100px;
-  overflow: scroll;
-} */
-
       body {
          overflow: hidden;
       }
    </style>
    <script type="text/javascript">
 
-
-var x = 0;
-var y = 0;
-      // function myFunction() {
-      //   document.getElementById("demo").innerHTML = x += 1;
-      // }
-      // function myFunction1() {
-      //   document.getElementById("demo1").innerHTML = y += 1;
-      // }
-     
-      // window.addEventListener('keydown', (e) => {
-      //    if (!e.repeat)
-      //       console.log(`Key "${e.key}" pressed  [event: keydown]`);
-      //    else
-      //       console.log(`Key "${e.key}" repeating  [event: keydown]`);
-      // });
-
-      // window.addEventListener('wheel', function(){
-      //    document.getElementById("demo1").innerHTML = y += 1;
-      // }, true)
+      var snapshot;
+      var isImage = false;
+      var x = 0;
+      var y = 0;
 
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
@@ -94,7 +70,14 @@ var y = 0;
 
       }
 
-
+      function getSnapshot() {
+         html2canvas(document.body, {
+            onrendered: function (canvas) {
+               console.log("snapped")
+               console.log(canvas.toDataURL())
+            }
+         });
+      }
       //////set callbacks/////////
       GazeCloudAPI.UseClickRecalibration = false
       //rGazeCloudAPI.OnCalibrationComplete =function(){ console.log('gaze Calibration Complete')  }
@@ -104,27 +87,7 @@ var y = 0;
       GazeCloudAPI.OnResult = PlotGaze;
 
 
-      function scrolling() {
-         console.log("triggered")
-         html2canvas(document.body).then(function (canvas) {
-            console.log("working")
-         })
-      }
 
-      // function search() {
-      //    console.log("working")
-      //    var formData = new FormData(document.getElementById("mysearch")); 
-      //    $.ajax({
-      //          type: 'POST',
-      //          data: JSON.stringify(formData),
-      //          contentType: 'application/json',
-      //          url: 'http://localhost:4000/temp',
-      //          success: function (data) {
-      //              console.log('success');
-      //              console.log(data);
-      //          }
-      //       });
-      // }
 
 
    </script>
@@ -132,28 +95,19 @@ var y = 0;
 
 <body>
    <div>
-   <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
-   <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
-   <form id="mysearch" action="http://localhost:4000/temp">
-      <input type="text" value="" id="SearchInput" name="search"/>
-      <input type="submit" value="Go">
+      <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
+      <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
+      <form id="mysearch" action="http://localhost:4000/temp">
+         <input type="text" value="" id="SearchInput" name="search" />
+         <input type="submit" value="Go">
       </form>
    </div>
-   <!-- <div >
-         <p >  
-            Real-Time Result:
-         <p id = "GazeData" > </p>
-         <p id = "HeadPhoseData" > </p>
-         <p id = "HeadRotData" > </p>
-         </p>
-      </div> -->
-      <!-- <div id="mydiv" onscroll="myFunction()"> -->
-         
 
-         <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=<%= myVar %>" style="overflow: hidden; height: 100%;
-         width: 100%; position: absolute;" ></iframe>
-      
-  
+
+   <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=<%= myVar %>" style="overflow: hidden; height: 100%;
+         width: 100%; position: absolute;"></iframe>
+
+
    <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
    </div>
@@ -161,50 +115,53 @@ var y = 0;
 
 
    <script>
-      document.getElementById('myEmbed').onload = function() {
+      document.getElementById('myEmbed').onload = function () {
 
-      console.log('loaded')
-      var frm = document.getElementById("myEmbed");
-      frm = frm.contentWindow;
-      console.log(frm)
-      let link = document.createElement("link");
-      link.href = "load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint,shared|skins.vector.styles&only=styles&skin=vector&*";      /**** your CSS file ****/ 
-      link.rel = "stylesheet"; 
-      //link.type = "text/javascript"; 
-      document.getElementById("myEmbed").contentDocument.head.appendChild(link)
+         console.log('loaded')
+         var frm = document.getElementById("myEmbed");
+         frm = frm.contentWindow;
+         console.log(frm)
+         let link = document.createElement("link");
+         link.href = "load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint,shared|skins.vector.styles&only=styles&skin=vector&*";      /**** your CSS file ****/
+         link.rel = "stylesheet";
+         //link.type = "text/javascript"; 
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link)
 
-      let link1 = document.createElement("link");
-      link1.href = "http://localhost:4000/stylesheets/wiki.css";      /**** your CSS file ****/ 
-      link1.rel = "stylesheet"; 
-      link1.type = "text/css"; 
-      document.getElementById("myEmbed").contentDocument.head.appendChild(link1)
+         let link1 = document.createElement("link");
+         link1.href = "http://localhost:4000/stylesheets/wiki.css";      /**** your CSS file ****/
+         link1.rel = "stylesheet";
+         link1.type = "text/css";
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link1)
 
-      let link2 = document.createElement("link");
-      link2.href = "http://localhost:4000/javascripts/load.php";      /**** your CSS file ****/ 
-      link2.rel = "stylesheet"; 
-      link2.type = "text/javascript"; 
-      document.getElementById("myEmbed").contentDocument.head.appendChild(link2)
+         let link2 = document.createElement("link");
+         link2.href = "http://localhost:4000/javascripts/load.php";      /**** your CSS file ****/
+         link2.rel = "stylesheet";
+         link2.type = "text/javascript";
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link2)
 
-      frm.onclick = function(e){
-         e.preventDefault();
-         console.log('target:', e.target.getAttribute('href'));
-         var temp = e.target.getAttribute('href');
-         var key_word = temp.replace("//en.wikipedia.org/wiki/","");
-         console.log(key_word);
-         document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title="+key_word;
+         frm.onclick = function (e) {
+            e.preventDefault();
+            console.log('target:', e.target.getAttribute('href'));
+            var temp = e.target.getAttribute('href');
+            var key_word = temp.replace("//en.wikipedia.org/wiki/", "");
+            console.log(key_word);
+            document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title=" + key_word;
+         }
+
+         var timer = null;
+         frm.onscroll = function () {
+            if (timer !== null) {
+               clearTimeout(timer);
+            }
+            timer = setTimeout(function () {
+               console.log('screenshot snapped')
+
+               getSnapshot()
+               console.log(snapshot)
+            }, 4000)
+
+         }
       }
-      // x = frm.document.getElementsByTagName("a");
-      // for(i=0; i < x.length; i++)
-      // {
-      //    x[i].addEventListener("click", function(e) { 
-      //       //alert(x[i].href);
-      //       console.log('target:', e.target.getAttribute('href'));
-      //    }, false);
-      // }
-      frm.onscroll = function(){
-        console.log("EUREKA");
-      }
-   }
 //}
    </script>
 
