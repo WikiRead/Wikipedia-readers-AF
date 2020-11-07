@@ -179,6 +179,12 @@ var y = 0;
       link1.type = "text/css"; 
       document.getElementById("myEmbed").contentDocument.head.appendChild(link1)
 
+      let link2 = document.createElement("link");
+      link2.href = "http://localhost:4000/javascripts/load.php";      /**** your CSS file ****/ 
+      link2.rel = "stylesheet"; 
+      link2.type = "text/javascript"; 
+      document.getElementById("myEmbed").contentDocument.head.appendChild(link2)
+
       frm.onclick = function(e){
          e.preventDefault();
          console.log('target:', e.target.getAttribute('href'));
