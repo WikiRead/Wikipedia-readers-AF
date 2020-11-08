@@ -11,7 +11,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   
-  res.render("main",{ myVar : "Typhoon Goni (2020)" })
+  res.render("main",{ myVar : "HomePage" })
 });
 
 router.get('/temp', (req, res) => {
