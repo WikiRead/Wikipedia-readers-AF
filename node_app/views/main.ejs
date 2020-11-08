@@ -16,7 +16,7 @@
       }
    </style>
    <script type="text/javascript">
-
+      var stream;
       var snapshot;
       var isImage = false;
       var x = 0;
@@ -45,37 +45,43 @@
                gaze.style.display = 'block';
          }
 
-
-         html2canvas(document.body).then(function (canvas) {
-            var data = {};
-            data.title = "title";
-            data.timestamp = Date.now()
-            data.message = "message";
-            data.gazeX = GazeData.GazeX;
-            data.gazeY = GazeData.GazeY;
-            //data.image = canvas.toDataURL()
-            //console.log(data)
-            $.ajax({
-               type: 'POST',
-               data: JSON.stringify(data),
-               contentType: 'application/json',
-               url: 'http://localhost:3000/',
-               // success: function (data) {
-               //    console.log('success');
-               // }
-            });
-
+         var data = {};
+         data.title = "title";
+         data.timestamp = Date.now()
+         data.message = "message";
+         data.gazeX = GazeData.GazeX;
+         data.gazeY = GazeData.GazeY;
+         //data.image = canvas.toDataURL()
+         //console.log(data)
+         $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: 'http://localhost:4000/',
+            // success: function (data) {
+            //    console.log('success');
+            // }
          });
+
 
 
       }
 
-      function getSnapshot() {
-         html2canvas(document.body, {
-            onrendered: function (canvas) {
-               console.log("snapped")
-               console.log(canvas.toDataURL())
-            }
+      async function getSnapshot() {
+
+         const vid = document.createElement('video');
+         vid.videoHeight = "640";
+         vid.videoWidth = "1200";
+         vid.srcObject = stream;
+         await vid.play();
+         const canvas = document.createElement('canvas');
+         canvas.width = vid.videoWidth;
+         canvas.height = vid.videoHeight;
+         canvas.getContext('2d').drawImage(vid, 0, 0);
+         stream.getTracks().forEach(t => t.stop());
+         return new Promise((res, rej) => {
+            console.log(canvas.toDataURL())
+            return canvas.toDataURL()
          });
       }
       //////set callbacks/////////
@@ -86,7 +92,20 @@
       GazeCloudAPI.OnError = function (msg) { console.log('err: ' + msg) }
       GazeCloudAPI.OnResult = PlotGaze;
 
+      async function startCapture() {
+         GazeCloudAPI.StartEyeTracking();
+         stream = await navigator.mediaDevices.getDisplayMedia(
+            {
+               video: {
+                  mediaSource: 'window',
+                  maxWidth: 4000,
+                  maxHeight: 4000
 
+               }
+            }
+         );
+
+      }
 
 
 
@@ -95,7 +114,7 @@
 
 <body>
    <div>
-      <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
+      <button type="button" onclick="startCapture();">Start</button>
       <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
       <form id="mysearch" action="http://localhost:4000/temp">
          <input type="text" value="" id="SearchInput" name="search" />
