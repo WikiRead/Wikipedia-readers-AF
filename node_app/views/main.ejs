@@ -68,10 +68,16 @@
       }
 
       async function getSnapshot() {
-
+         stream = await navigator.mediaDevices.getDisplayMedia(
+            {
+               video: {
+                  mediaSource: 'browser',
+               }
+            }
+         );
          const vid = document.createElement('video');
-         vid.videoHeight = "640";
-         vid.videoWidth = "1200";
+         let { width, height } = stream.getTracks()[0].getSettings();
+         console.log(`${width}x${height}`);
          vid.srcObject = stream;
          await vid.play();
          const canvas = document.createElement('canvas');
@@ -94,16 +100,7 @@
 
       async function startCapture() {
          GazeCloudAPI.StartEyeTracking();
-         stream = await navigator.mediaDevices.getDisplayMedia(
-            {
-               video: {
-                  mediaSource: 'window',
-                  maxWidth: 4000,
-                  maxHeight: 4000
-
-               }
-            }
-         );
+        
 
       }
 
@@ -177,7 +174,7 @@
 
                getSnapshot()
                console.log(snapshot)
-            }, 4000)
+            }, 1000)
 
          }
       }
