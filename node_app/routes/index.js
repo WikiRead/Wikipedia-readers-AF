@@ -39,8 +39,9 @@ router.get('/temp', (req, res) => {
 
 router.post('/', function(req,res,next){
   console.log(typeof req.body.image);
+  console.log("data posted")
   Data.create({
-    title: req.body.title, timestamp: req.body.timestamp, gazeX: req.body.gazeX, gazeY: req.body.gazeY, image: req.body.image 
+    id: req.body.deviceId, timestamp: req.body.timestamp, gazeX: req.body.gazeX, gazeY: req.body.gazeY, image: req.body.image 
   })
   res.send(req.body);
 });

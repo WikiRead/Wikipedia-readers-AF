@@ -11,6 +11,8 @@ const morgan = require("morgan");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var bodyParser = require('body-parser');
+
 
 var app = express();
 require('dotenv').config();
@@ -25,7 +27,7 @@ const sessionConfig = {
     secure: false
   }
 };
-
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(session(sessionConfig));
 
 // view engine setup

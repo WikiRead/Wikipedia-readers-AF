@@ -18,9 +18,10 @@
    <script type="text/javascript">
       var stream;
       var snapshot;
-      var isImage = false;
-      var x = 0;
-      var y = 0;
+      var deviceId;
+      var valid = false
+      var gazeXlist = [];
+      var gazeYlist = [];
 
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
@@ -44,51 +45,65 @@
             if (gaze.style.display == 'none')
                gaze.style.display = 'block';
          }
+         gazeXlist.push(GazeData.GazeX)
+         gazeYlist.push(GazeData.GazeY)
+        
+        
+         // data.image = canvas.toDataURL()
+         // console.log(data)
+         // $.ajax({
+         //    type: 'POST',
+         //    data: JSON.stringify(data),
+         //    contentType: 'application/json',
+         //    url: 'http://localhost:4000/',
+         //    // success: function (data) {
+         //    //    console.log('success');
+         //    // }
+         // });
 
-         var data = {};
-         data.title = "title";
+
+
+      }
+      function postToDatabase() {
+         data = {}
+         console.log('posting to database')
+         console.log(deviceId)
+         data.userid = "title";
+         data.image = snapshot
          data.timestamp = Date.now()
-         data.message = "message";
-         data.gazeX = GazeData.GazeX;
-         data.gazeY = GazeData.GazeY;
-         //data.image = canvas.toDataURL()
-         //console.log(data)
+         data.gazeX = gazeXlist
+         data.gazeY = gazeYlist
+         data.deviceId = deviceId
          $.ajax({
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
             url: 'http://localhost:4000/',
-            // success: function (data) {
-            //    console.log('success');
-            // }
-         });
-
-
-
-      }
-
-      async function getSnapshot() {
-         stream = await navigator.mediaDevices.getDisplayMedia(
-            {
-               video: {
-                  mediaSource: 'browser',
-               }
+            success: function (data) {
+               console.log('success');
             }
-         );
+         });
+         gazeXlist = []
+         gazeYlist = []
+      }
+      async function getSnapshot() {
+
          const vid = document.createElement('video');
-         let { width, height } = stream.getTracks()[0].getSettings();
-         console.log(`${width}x${height}`);
          vid.srcObject = stream;
          await vid.play();
          const canvas = document.createElement('canvas');
          canvas.width = vid.videoWidth;
          canvas.height = vid.videoHeight;
          canvas.getContext('2d').drawImage(vid, 0, 0);
-         stream.getTracks().forEach(t => t.stop());
-         return new Promise((res, rej) => {
-            console.log(canvas.toDataURL())
-            return canvas.toDataURL()
-         });
+         //stream.getTracks().forEach(t => t.stop());
+         // return new Promise((res, rej) => {
+         //    console.log('screenshot snapped')
+         //    snapshot = canvas.toDataURL("image/png");
+         // });
+         track = stream.getTracks()[0]
+         deviceId = track.getCapabilities().deviceId
+         snapshot = canvas.toDataURL()
+         return canvas.toDataURL()
       }
       //////set callbacks/////////
       GazeCloudAPI.UseClickRecalibration = false
@@ -99,8 +114,15 @@
       GazeCloudAPI.OnResult = PlotGaze;
 
       async function startCapture() {
+         stream = await navigator.mediaDevices.getDisplayMedia(
+            {
+               video: {
+
+                  mediaSource: 'browser',
+               },
+            }
+         );
          GazeCloudAPI.StartEyeTracking();
-        
 
       }
 
@@ -166,15 +188,22 @@
 
          var timer = null;
          frm.onscroll = function () {
+            if (valid ===true) {
+               console.log('calling postdatabase function')
+               postToDatabase()
+               valid = false
+            }
             if (timer !== null) {
                clearTimeout(timer);
             }
-            timer = setTimeout(function () {
-               console.log('screenshot snapped')
+            timer = setTimeout(async function () {
 
-               getSnapshot()
-               console.log(snapshot)
-            }, 1000)
+               await getSnapshot()
+               console.log('snapshot created')
+               valid = true
+
+
+            }, 4000)
 
          }
       }
