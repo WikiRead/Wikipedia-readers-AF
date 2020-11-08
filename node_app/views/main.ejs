@@ -7,7 +7,7 @@
 
 
    <script src="https://api.gazerecorder.com/GazeCloudAPI.js"></script>
-   <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+   <script src="https://code.jquery.com/jquery-1.6.2.min.js"></script>
    <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"> </script>
 
    <style type="text/css">
@@ -16,22 +16,14 @@
       }
    </style>
    <script type="text/javascript">
+      var stream;
+      var snapshot;
+      var deviceId;
+      var valid = false
+      var gazeXlist = [];
+      var gazeYlist = [];
 
       function PlotGaze(GazeData) {
-
-         /*
-            GazeData.state // 0: valid gaze data; -1 : face tracking lost, 1 : gaze uncalibrated
-            GazeData.docX // gaze x in document coordinates
-            GazeData.docY // gaze y in document cordinates
-            GazeData.time // timestamp
-         */
-
-
-         //  document.getElementById("GazeData").innerHTML = "GazeX: " + GazeData.GazeX + " GazeY: " + GazeData.GazeY;
-         //  document.getElementById("HeadPhoseData").innerHTML = " HeadX: " + GazeData.HeadX + " HeadY: " + GazeData.HeadY + " HeadZ: " + GazeData.HeadZ;
-         //  document.getElementById("HeadRotData").innerHTML = " Yaw: " + GazeData.HeadYaw + " Pitch: " + GazeData.HeadPitch + " Roll: " + GazeData.HeadRoll;
-
-
          var x = GazeData.docX;
          var y = GazeData.docY;
 
@@ -53,33 +45,66 @@
             if (gaze.style.display == 'none')
                gaze.style.display = 'block';
          }
+         gazeXlist.push(GazeData.GazeX)
+         gazeYlist.push(GazeData.GazeY)
+        
+        
+         // data.image = canvas.toDataURL()
+         // console.log(data)
+         // $.ajax({
+         //    type: 'POST',
+         //    data: JSON.stringify(data),
+         //    contentType: 'application/json',
+         //    url: 'http://localhost:4000/',
+         //    // success: function (data) {
+         //    //    console.log('success');
+         //    // }
+         // });
 
-
-         html2canvas(document.body).then(function (canvas) {
-            var data = {};
-            data.title = "title";
-            data.timestamp = Date.now()
-            data.message = "message";
-            data.gazeX = GazeData.GazeX;
-            data.gazeY = GazeData.GazeY;
-            data.image = canvas.toDataURL()
-            //console.log(data)
-            $.ajax({
-               type: 'POST',
-               data: JSON.stringify(data),
-               contentType: 'application/json',
-               url: 'http://localhost:3000/',
-               // success: function (data) {
-               //    console.log('success');
-               // }
-            });
-
-         });
 
 
       }
+      function postToDatabase() {
+         data = {}
+         console.log('posting to database')
+         console.log(deviceId)
+         data.userid = "title";
+         data.image = snapshot
+         data.timestamp = Date.now()
+         data.gazeX = gazeXlist
+         data.gazeY = gazeYlist
+         data.deviceId = deviceId
+         $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: 'http://localhost:4000/',
+            success: function (data) {
+               console.log('success');
+            }
+         });
+         gazeXlist = []
+         gazeYlist = []
+      }
+      async function getSnapshot() {
 
-
+         const vid = document.createElement('video');
+         vid.srcObject = stream;
+         await vid.play();
+         const canvas = document.createElement('canvas');
+         canvas.width = vid.videoWidth;
+         canvas.height = vid.videoHeight;
+         canvas.getContext('2d').drawImage(vid, 0, 0);
+         //stream.getTracks().forEach(t => t.stop());
+         // return new Promise((res, rej) => {
+         //    console.log('screenshot snapped')
+         //    snapshot = canvas.toDataURL("image/png");
+         // });
+         track = stream.getTracks()[0]
+         deviceId = track.getCapabilities().deviceId
+         snapshot = canvas.toDataURL()
+         return canvas.toDataURL()
+      }
       //////set callbacks/////////
       GazeCloudAPI.UseClickRecalibration = false
       //rGazeCloudAPI.OnCalibrationComplete =function(){ console.log('gaze Calibration Complete')  }
@@ -88,27 +113,102 @@
       GazeCloudAPI.OnError = function (msg) { console.log('err: ' + msg) }
       GazeCloudAPI.OnResult = PlotGaze;
 
+      async function startCapture() {
+         stream = await navigator.mediaDevices.getDisplayMedia(
+            {
+               video: {
+
+                  mediaSource: 'browser',
+               },
+            }
+         );
+         GazeCloudAPI.StartEyeTracking();
+
+      }
+
+
 
    </script>
 </head>
 
 <body>
-   <div class="center">
-   <button type="button" onclick="GazeCloudAPI.StartEyeTracking();">Start</button>
-   <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
+   <div>
+      <button type="button" onclick="startCapture();">Start</button>
+      <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
+      <form id="mysearch" action="http://localhost:4000/temp">
+         <input type="text" value="" id="SearchInput" name="search" />
+         <input type="submit" value="Go">
+      </form>
    </div>
-   <!-- <div >
-         <p >  
-            Real-Time Result:
-         <p id = "GazeData" > </p>
-         <p id = "HeadPhoseData" > </p>
-         <p id = "HeadRotData" > </p>
-         </p>
-      </div> -->
-   <embed id="myEmbed " src="https://www.wikipedia.org/" width="100%" height="100%">
+
+
+   <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=<%= myVar %>" style="overflow: hidden; height: 100%;
+         width: 100%; position: absolute;"></iframe>
+
+
    <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
    </div>
+
+
+
+   <script>
+      document.getElementById('myEmbed').onload = function () {
+
+         console.log('loaded')
+         var frm = document.getElementById("myEmbed");
+         frm = frm.contentWindow;
+         console.log(frm)
+         let link = document.createElement("link");
+         link.href = "load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint,shared|skins.vector.styles&only=styles&skin=vector&*";      /**** your CSS file ****/
+         link.rel = "stylesheet";
+         //link.type = "text/javascript"; 
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link)
+
+         let link1 = document.createElement("link");
+         link1.href = "http://localhost:4000/stylesheets/wiki.css";      /**** your CSS file ****/
+         link1.rel = "stylesheet";
+         link1.type = "text/css";
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link1)
+
+         let link2 = document.createElement("link");
+         link2.href = "http://localhost:4000/javascripts/load.php";      /**** your CSS file ****/
+         link2.rel = "stylesheet";
+         link2.type = "text/javascript";
+         document.getElementById("myEmbed").contentDocument.head.appendChild(link2)
+
+         frm.onclick = function (e) {
+            e.preventDefault();
+            console.log('target:', e.target.getAttribute('href'));
+            var temp = e.target.getAttribute('href');
+            var key_word = temp.replace("//en.wikipedia.org/wiki/", "");
+            console.log(key_word);
+            document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title=" + key_word;
+         }
+
+         var timer = null;
+         frm.onscroll = function () {
+            if (valid ===true) {
+               console.log('calling postdatabase function')
+               postToDatabase()
+               valid = false
+            }
+            if (timer !== null) {
+               clearTimeout(timer);
+            }
+            timer = setTimeout(async function () {
+
+               await getSnapshot()
+               console.log('snapshot created')
+               valid = true
+
+
+            }, 4000)
+
+         }
+      }
+//}
+   </script>
 
 </body>
 

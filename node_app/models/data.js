@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = new mongoose.Schema;
 const DataSchema = mongoose.Schema({
-  title: {
+    id : {
     type: String,
     required: true
   },
@@ -10,11 +10,11 @@ const DataSchema = mongoose.Schema({
     required: true
   },
   gazeX: {
-    type: Number,
+    type: [Number],
     required: true
   },
   gazeY: {
-      type: Number,
+      type: [Number],
       required: true
   },
   image:{
