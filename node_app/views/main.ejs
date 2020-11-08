@@ -78,7 +78,7 @@
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
-            url: 'http://localhost:4000/',
+            url: '/',
             success: function (data) {
                console.log('success');
             }
@@ -135,14 +135,14 @@
    <div>
       <button type="button" onclick="startCapture();">Start</button>
       <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
-      <form id="mysearch" action="http://localhost:4000/temp">
+      <form id="mysearch" action="/temp">
          <input type="text" value="" id="SearchInput" name="search" />
          <input type="submit" value="Go">
       </form>
    </div>
 
 
-   <iframe id="myEmbed" src="http://localhost:4000/json_placeholder/w/index.php?action=render&title=<%= myVar %>" style="overflow: hidden; height: 100%;
+   <iframe id="myEmbed" src="/json_placeholder/w/index.php?action=render&title=<%= myVar %>" style="overflow: hidden; height: 100%;
          width: 100%; position: absolute;"></iframe>
 
 
@@ -166,13 +166,13 @@
          document.getElementById("myEmbed").contentDocument.head.appendChild(link)
 
          let link1 = document.createElement("link");
-         link1.href = "http://localhost:4000/stylesheets/wiki.css";      /**** your CSS file ****/
+         link1.href = "/stylesheets/wiki.css";      /**** your CSS file ****/
          link1.rel = "stylesheet";
          link1.type = "text/css";
          document.getElementById("myEmbed").contentDocument.head.appendChild(link1)
 
          let link2 = document.createElement("link");
-         link2.href = "http://localhost:4000/javascripts/load.php";      /**** your CSS file ****/
+         link2.href = "/javascripts/load.php";      /**** your CSS file ****/
          link2.rel = "stylesheet";
          link2.type = "text/javascript";
          document.getElementById("myEmbed").contentDocument.head.appendChild(link2)
@@ -183,7 +183,7 @@
             var temp = e.target.getAttribute('href');
             var key_word = temp.replace("//en.wikipedia.org/wiki/", "");
             console.log(key_word);
-            document.getElementById('myEmbed').src = "http://localhost:4000/json_placeholder/w/index.php?action=render&title=" + key_word;
+            document.getElementById('myEmbed').src = "/json_placeholder/w/index.php?action=render&title=" + key_word;
          }
 
          var timer = null;
