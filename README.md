@@ -5,4 +5,4 @@ This project describes the information search pattern of readers in Wikipedia
 1.`cd node_app`  
 2.`npm install`  
 3.`npm start`  
-now open localhost:3000 in your browser to start using the collection tool.
+now open localhost:4000 in your browser to start using the collection tool.
