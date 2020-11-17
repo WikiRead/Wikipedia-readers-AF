@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 var Schema = new mongoose.Schema;
 const DataSchema = mongoose.Schema({
-    id : {
-    type: String,
+    sysId : {
+    type: Number,
+    required: true
+  },
+  sessionId : {
+    type: Number,
     required: true
   },
   timestamp: {
@@ -20,7 +24,11 @@ const DataSchema = mongoose.Schema({
   image:{
       type: String,
       required: true
-  }
+  },
+  url:{
+    type: String,
+    required: true
+}
  
 });
 

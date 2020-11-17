@@ -22,6 +22,7 @@
       var valid = false
       var gazeXlist = [];
       var gazeYlist = [];
+      var url  = "https://en.wikipedia.org/wiki/Main_Page"
 
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
@@ -47,8 +48,8 @@
          }
          gazeXlist.push(GazeData.GazeX)
          gazeYlist.push(GazeData.GazeY)
-        
-        
+
+
          // data.image = canvas.toDataURL()
          // console.log(data)
          // $.ajax({
@@ -67,13 +68,14 @@
       function postToDatabase() {
          data = {}
          console.log('posting to database')
-         console.log(deviceId)
-         data.userid = "title";
+         data.sessionId = sessionStorage.sessionId
          data.image = snapshot
          data.timestamp = Date.now()
          data.gazeX = gazeXlist
          data.gazeY = gazeYlist
-         data.deviceId = deviceId
+         data.sysId = localStorage.sysId
+         data.url = url
+         console.log(data.url)
          $.ajax({
             type: 'POST',
             data: JSON.stringify(data),
@@ -125,7 +127,24 @@
          GazeCloudAPI.StartEyeTracking();
 
       }
+      window.addEventListener('load', function () {
 
+         if (typeof localStorage.sysId == 'undefined') {
+            localStorage.sysId = Math.floor(Math.random() * 100000000000000000000)
+            console.log("your unique ID is ", localStorage.sysId)
+         }
+         else {
+            console.log("your unique ID is ", localStorage.sysId)
+         }
+         if (typeof sessionStorage.sysId == 'undefined') {
+            sessionStorage.sessionId = Math.floor(Math.random() * 100000000000000000000)
+            console.log("your session ID is ", sessionStorage.sessionId)
+         }
+         else {
+            console.log("your session ID is ", sessionStorage.sessionId)
+         }
+
+      })
 
 
    </script>
@@ -180,15 +199,15 @@
          frm.onclick = function (e) {
             e.preventDefault();
             console.log('target:', e.target.getAttribute('href'));
-            var temp = e.target.getAttribute('href');
-            var key_word = temp.replace("//en.wikipedia.org/wiki/", "");
+            url = e.target.getAttribute('href');
+            var key_word = url.replace("//en.wikipedia.org/wiki/", "");
             console.log(key_word);
             document.getElementById('myEmbed').src = "/json_placeholder/w/index.php?action=render&title=" + key_word;
          }
 
          var timer = null;
          frm.onscroll = function () {
-            if (valid ===true) {
+            if (valid === true) {
                console.log('calling postdatabase function')
                postToDatabase()
                valid = false
