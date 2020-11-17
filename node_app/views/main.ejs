@@ -146,6 +146,12 @@
 
       })
 
+      function Search(e)
+      {
+         e.preventDefault()
+         console.log(e.target)
+      }
+
 
    </script>
 </head>
@@ -154,7 +160,7 @@
    <div>
       <button type="button" onclick="startCapture();">Start</button>
       <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
-      <form id="mysearch" action="/temp">
+      <form id="mysearch">
          <input type="text" value="" id="SearchInput" name="search" />
          <input type="submit" value="Go">
       </form>
@@ -172,6 +178,31 @@
 
 
    <script>
+
+      document.getElementById('mysearch').onsubmit = function (e) {
+         e.preventDefault()
+         console.log(e.target)
+         form = new FormData(e.target)
+         var data = {
+            "search" : form.get("search")
+         }
+         var title
+         $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: '/temp',
+            success: function (data) {
+               console.log('success');
+               console.log(data);
+               title = data
+               document.getElementById('myEmbed').src = "/json_placeholder/w/index.php?action=render&title=" + title;
+            }
+         });
+         
+         
+      }
+
       document.getElementById('myEmbed').onload = function () {
 
          console.log('loaded')

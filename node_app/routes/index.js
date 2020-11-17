@@ -14,11 +14,11 @@ router.get('/', function(req, res, next) {
   res.render("main",{ myVar : "HomePage" })
 });
 
-router.get('/temp', (req, res) => {
+router.post('/temp', (req, res) => {
   var temp = "q";
-  //console.log(req);
+  console.log(req.body);
   request(
-    { url: "https://en.wikipedia.org/w/api.php?action=opensearch&search="+req.query.search+"&format=json" },
+    { url: "https://en.wikipedia.org/w/api.php?action=opensearch&search="+req.body.search+"&format=json" },
     (error, response, body) => {
       if (error || response.statusCode !== 200) {
         return res.status(500).json({ type: 'error', message: err.message });
@@ -31,7 +31,7 @@ router.get('/temp', (req, res) => {
       //console.log("work")
       console.log(temp)
       //res.send(wiki)
-      res.render("main",{ myVar : temp })
+      res.send(temp)
     }
   )
   
