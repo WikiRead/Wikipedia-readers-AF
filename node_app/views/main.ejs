@@ -23,29 +23,30 @@
       var gazeXlist = [];
       var gazeYlist = [];
       var url  = "https://en.wikipedia.org/wiki/Main_Page"
+      var time
 
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
          var y = GazeData.docY;
 
-         var gaze = document.getElementById("gaze");
-         x -= gaze.clientWidth / 2;
-         y -= gaze.clientHeight / 2;
+         // var gaze = document.getElementById("gaze");
+         // x -= gaze.clientWidth / 2;
+         // y -= gaze.clientHeight / 2;
 
 
 
-         gaze.style.left = x + "px";
-         gaze.style.top = y + "px";
+         // gaze.style.left = x + "px";
+         // gaze.style.top = y + "px";
 
 
-         if (GazeData.state != 0) {
-            if (gaze.style.display == 'block')
-               gaze.style.display = 'none';
-         }
-         else {
-            if (gaze.style.display == 'none')
-               gaze.style.display = 'block';
-         }
+         // if (GazeData.state != 0) {
+         //    if (gaze.style.display == 'block')
+         //       gaze.style.display = 'none';
+         // }
+         // else {
+         //    if (gaze.style.display == 'none')
+         //       gaze.style.display = 'block';
+         // }
          gazeXlist.push(GazeData.GazeX)
          gazeYlist.push(GazeData.GazeY)
 
@@ -105,12 +106,13 @@
          track = stream.getTracks()[0]
          deviceId = track.getCapabilities().deviceId
          snapshot = canvas.toDataURL()
+         //console.log(snapshot)
          return canvas.toDataURL()
       }
       //////set callbacks/////////
       GazeCloudAPI.UseClickRecalibration = false
       //rGazeCloudAPI.OnCalibrationComplete =function(){ console.log('gaze Calibration Complete')  }
-      GazeCloudAPI.CalibrationType = 1
+      //GazeCloudAPI.CalibrationType = 1
       GazeCloudAPI.OnCamDenied = function () { console.log('camera  access denied') }
       GazeCloudAPI.OnError = function (msg) { console.log('err: ' + msg) }
       GazeCloudAPI.OnResult = PlotGaze;
@@ -119,13 +121,28 @@
          stream = await navigator.mediaDevices.getDisplayMedia(
             {
                video: {
-
+                  width: 1280,
+                  height: 720,
                   mediaSource: 'browser',
                },
             }
          );
+         
          GazeCloudAPI.StartEyeTracking();
+         time = new Date()
+         time = time.getTime()
 
+      }
+      function stopCapture() {
+         GazeCloudAPI.StopEyeTracking();
+         temp = new Date()
+         temp = temp.getTime()
+         milisec = temp - time
+         sec = Math.floor(milisec / 1000)
+         min = Math.floor(sec / 60)
+         sec = sec % 60
+         alert(`your reading session lasted: ${min}:${sec}`)
+         stream.getTracks().forEach(track => track.stop())
       }
       window.addEventListener('load', function () {
 
@@ -159,7 +176,7 @@
 <body>
    <div>
       <button type="button" onclick="startCapture();">Start</button>
-      <button type="button" onclick="GazeCloudAPI.StopEyeTracking();">Stop</button>
+      <button type="button" onclick="stopCapture()">Stop</button>
       <form id="mysearch">
          <input type="text" value="" id="SearchInput" name="search" />
          <input type="submit" value="Go">
@@ -171,9 +188,9 @@
          width: 100%; position: absolute;"></iframe>
 
 
-   <div id="gaze"
+   <!-- <div id="gaze"
       style='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'>
-   </div>
+   </div> -->
 
 
 
