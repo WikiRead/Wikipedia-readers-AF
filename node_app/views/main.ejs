@@ -77,7 +77,7 @@
          console.log('snapshot created')
          valid = true
       }
-      GazeCloudAPI.CalibrationType = 1
+      //GazeCloudAPI.CalibrationType = 1
       GazeCloudAPI.OnCamDenied = function () { console.log('camera  access denied') }
       GazeCloudAPI.OnError = function (msg) { console.log('err: ' + msg) }
       GazeCloudAPI.OnResult = PlotGaze;
