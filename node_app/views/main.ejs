@@ -28,6 +28,7 @@
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
          var y = GazeData.docY;
+         console.log(x)
          gazeXlist.push(GazeData.GazeX)
          gazeYlist.push(GazeData.GazeY)
       }
@@ -73,9 +74,15 @@
       GazeCloudAPI.OnCalibrationComplete = async function () {
          console.log('gaze Calibration Complete')
 
-         await getSnapshot()
-         console.log('snapshot created')
-         valid = true
+         setTimeout(async function () {
+            var gazeXlist = [];
+            var gazeYlist = [];
+            await getSnapshot()
+            console.log('snapshot created')
+            valid = true
+
+
+         }, 4000)
       }
       //GazeCloudAPI.CalibrationType = 1
       GazeCloudAPI.OnCamDenied = function () { console.log('camera  access denied') }
