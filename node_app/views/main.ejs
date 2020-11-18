@@ -22,49 +22,14 @@
       var valid = false
       var gazeXlist = [];
       var gazeYlist = [];
-      var url  = "https://en.wikipedia.org/wiki/Main_Page"
+      var url = "https://en.wikipedia.org/wiki/Main_Page"
       var time
 
       function PlotGaze(GazeData) {
          var x = GazeData.docX;
          var y = GazeData.docY;
-
-         // var gaze = document.getElementById("gaze");
-         // x -= gaze.clientWidth / 2;
-         // y -= gaze.clientHeight / 2;
-
-
-
-         // gaze.style.left = x + "px";
-         // gaze.style.top = y + "px";
-
-
-         // if (GazeData.state != 0) {
-         //    if (gaze.style.display == 'block')
-         //       gaze.style.display = 'none';
-         // }
-         // else {
-         //    if (gaze.style.display == 'none')
-         //       gaze.style.display = 'block';
-         // }
          gazeXlist.push(GazeData.GazeX)
          gazeYlist.push(GazeData.GazeY)
-
-
-         // data.image = canvas.toDataURL()
-         // console.log(data)
-         // $.ajax({
-         //    type: 'POST',
-         //    data: JSON.stringify(data),
-         //    contentType: 'application/json',
-         //    url: 'http://localhost:4000/',
-         //    // success: function (data) {
-         //    //    console.log('success');
-         //    // }
-         // });
-
-
-
       }
       function postToDatabase() {
          data = {}
@@ -98,21 +63,21 @@
          canvas.width = vid.videoWidth;
          canvas.height = vid.videoHeight;
          canvas.getContext('2d').drawImage(vid, 0, 0);
-         //stream.getTracks().forEach(t => t.stop());
-         // return new Promise((res, rej) => {
-         //    console.log('screenshot snapped')
-         //    snapshot = canvas.toDataURL("image/png");
-         // });
          track = stream.getTracks()[0]
-         deviceId = track.getCapabilities().deviceId
          snapshot = canvas.toDataURL()
          //console.log(snapshot)
          return canvas.toDataURL()
       }
       //////set callbacks/////////
       GazeCloudAPI.UseClickRecalibration = false
-      //rGazeCloudAPI.OnCalibrationComplete =function(){ console.log('gaze Calibration Complete')  }
-      //GazeCloudAPI.CalibrationType = 1
+      GazeCloudAPI.OnCalibrationComplete = async function () {
+         console.log('gaze Calibration Complete')
+
+         await getSnapshot()
+         console.log('snapshot created')
+         valid = true
+      }
+      GazeCloudAPI.CalibrationType = 1
       GazeCloudAPI.OnCamDenied = function () { console.log('camera  access denied') }
       GazeCloudAPI.OnError = function (msg) { console.log('err: ' + msg) }
       GazeCloudAPI.OnResult = PlotGaze;
@@ -127,7 +92,7 @@
                },
             }
          );
-         
+
          GazeCloudAPI.StartEyeTracking();
          time = new Date()
          time = time.getTime()
@@ -143,6 +108,9 @@
          sec = sec % 60
          alert(`your reading session lasted: ${min}:${sec}`)
          stream.getTracks().forEach(track => track.stop())
+         console.log('calling postdatabase function')
+         postToDatabase()
+         valid = false
       }
       window.addEventListener('load', function () {
 
@@ -163,11 +131,11 @@
 
       })
 
-      function Search(e)
-      {
+      function Search(e) {
          e.preventDefault()
          console.log(e.target)
       }
+      /// url capturing
 
 
    </script>
@@ -201,7 +169,7 @@
          console.log(e.target)
          form = new FormData(e.target)
          var data = {
-            "search" : form.get("search")
+            "search": form.get("search")
          }
          var title
          $.ajax({
@@ -216,16 +184,28 @@
                document.getElementById('myEmbed').src = "/json_placeholder/w/index.php?action=render&title=" + title;
             }
          });
-         
-         
+
+
       }
 
-      document.getElementById('myEmbed').onload = function () {
+      document.getElementById('myEmbed').onload = async function () {
 
-         console.log('loaded')
+         if (typeof stream == 'undefined') {
+            console.log("stream has not started")
+         }
+         else {
+            console.log('calling postdatabase function')
+            postToDatabase()
+
+            await getSnapshot()
+            console.log('snapshot created')
+            valid = true
+         }
+
+
          var frm = document.getElementById("myEmbed");
          frm = frm.contentWindow;
-         console.log(frm)
+         url = frm.location.href
          let link = document.createElement("link");
          link.href = "load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint,shared|skins.vector.styles&only=styles&skin=vector&*";      /**** your CSS file ****/
          link.rel = "stylesheet";
@@ -247,8 +227,8 @@
          frm.onclick = function (e) {
             e.preventDefault();
             console.log('target:', e.target.getAttribute('href'));
-            url = e.target.getAttribute('href');
-            var key_word = url.replace("//en.wikipedia.org/wiki/", "");
+            var temp = e.target.getAttribute('href');
+            var key_word = temp.replace("//en.wikipedia.org/wiki/", "");
             console.log(key_word);
             document.getElementById('myEmbed').src = "/json_placeholder/w/index.php?action=render&title=" + key_word;
          }

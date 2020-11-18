@@ -41,6 +41,7 @@ router.post('/', function(req,res,next){
   console.log(typeof req.body.image);
   
   
+  console.log(req.body.url)
   
   Data.create({
     sysId: req.body.sysId,
