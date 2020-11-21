@@ -75,9 +75,10 @@
          console.log('gaze Calibration Complete')
 
          setTimeout(async function () {
+            
+            await getSnapshot()
             var gazeXlist = [];
             var gazeYlist = [];
-            await getSnapshot()
             console.log('snapshot created')
             valid = true
 
