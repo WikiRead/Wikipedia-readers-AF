@@ -9,7 +9,7 @@ Created on Sun Nov 22 19:37:03 2020
 
 from data_preprocessing import data_preprocessing 
 from collections import defaultdict
-from heatmap.py import get_image_data
+#from heatmap.py import get_image_data
 
 
 data_path = "data/data.csv"
@@ -64,8 +64,11 @@ for index, row in df_sub.iterrows():
 
 print(avg_time)
 
+#freqs = get_image_data(df)
 
+times = []
 
+for index, row in df_sub.iterrows():
+    time = len(df_sub.iloc[index]['gazeX'])*avg_time/1000
 
-
-
+print(times)
