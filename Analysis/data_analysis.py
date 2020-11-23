@@ -83,4 +83,7 @@ for freq in freqs:
     else:
         no_data_with_pictures+=1
         time_with_pictures+=1
-    
+
+
+print(time_with_pictures)
+print(time_without_pictures)
