@@ -8,6 +8,9 @@ Created on Sun Nov 22 19:37:03 2020
 
 
 from data_preprocessing import data_preprocessing 
+from collections import defaultdict
+
+
 data_path = "data/data.csv"
 output_folder = "data/images"
 
@@ -20,13 +23,27 @@ print("no of users are ", len(users))
 
 sessions = df['sessionId'].unique()
 
-print(len(sessions))
+print("avg sessions per  user are" ,len(sessions)/len(users))
 
 urls = df['url'].unique()
-df = df.drop(columns = ['_id', '__v','gazeX','gazeY'])
-#df = df.groupby('sysId')
 
-print(df.head(3))
+df1 = df.drop(columns = ['_id', '__v','gazeX','gazeY'])
     
+avg_nav_depth = defaultdict(lambda:0)
 
+
+for user in users:
+    user_values = df1.loc[df1['sysId'] == user]
+    sessions = user_values['sessionId'].unique()
+    #print("no of sessions",len(sessions))
+    for session in sessions:
+        unique_urls = user_values.loc[user_values['sessionId'] == session]
+        #print(unique_urls)
+        avg_nav_depth[user] +=len(unique_urls)
+    
+    avg_nav_depth[user]/=len(sessions)
+
+print(avg_nav_depth)
+
+urls = df1.loc[df1['sysId'] == '80677021885377460000']['url']
 
