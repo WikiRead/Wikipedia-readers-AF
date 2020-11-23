@@ -8,8 +8,6 @@ Created on Wed Nov 18 19:39:24 2020
 from urllib import request
 import pandas as pd
 
-data_path = "data/data.csv"
-output_folder = "data/images"
 def data_preprocessing(data_path, output_folder):
     
     df = pd.read_csv(data_path)

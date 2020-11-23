@@ -38,36 +38,25 @@ def get_image_data(df):
         Y = df[i,2]
         Y = json.loads(Y)   
         im = cv2.imread('data/images/image'+str(i)+'.png')
-        print(im.shape)
         dim = (1920, 1080)
-        # resize image
         resized = cv2.resize(im, dim, interpolation = cv2.INTER_AREA)
         bbox, label, conf = cv.detect_common_objects(resized)
         freq = 0
-        # X = [X[te] - im.shape[1]/2 for te in range(len(X))] 
-        # Y = [Y[te] - im.shape[0]/2 for te in range(len(Y))]
-        print(bbox,label,conf)
         for j in range(len(label)):
             if label[j] != 'laptop' and label[j] != 'tv':
                 x1, y1, x2, y2 = bbox[j]
                 for k in range(len(X)):
                     if FindPoint(x1,y1,x2,y2,X[k],Y[k]):
                         freq += 1
-        print(freq)
         if len(X)!= 0:
             freq_list.append(freq/len(X))
         else:
             freq_list.append(0)
         output_image = draw_bbox(resized, bbox, label, conf)
-        # plt.imshow(output_image)
-        # plt.show()
-        # plt.clf()
         if len(X) > 2:
             hmax = sns.kdeplot(X, Y,color='r', shade=True, cmap=alpha_cmap(plt.cm.viridis), shade_lowest=False)
             hmax.collections[0].set_alpha(0)
-        #plt.scatter(X,Y)
         plt.imshow(output_image, zorder=0)
-        #plt.show()
         plt.savefig("heatmaps/map" + str(i) + ".png")
         plt.clf() 
 
