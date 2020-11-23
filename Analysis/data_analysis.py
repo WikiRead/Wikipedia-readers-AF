@@ -9,6 +9,7 @@ Created on Sun Nov 22 19:37:03 2020
 
 from data_preprocessing import data_preprocessing 
 from collections import defaultdict
+from heatmap.py import get_image_data
 
 
 data_path = "data/data.csv"
@@ -46,5 +47,25 @@ for user in users:
     avg_nav_depth[user]/=len(sessions)
 
 print(avg_nav_depth)
+
+ 
+
+##calculating avg time for each data point
+
+df_sub = df.loc[df['sysId'] == '89648605729908210000']
+
+avg_time = 0
+for index, row in df_sub.iterrows():
+    if index == 0:
+        pass
+    else:
+        avg_time += (df_sub.iloc[index]['timestamp']-df_sub.iloc[index-1]['timestamp'])/len(df_sub.iloc[index]['gazeX'])
+
+
+print(avg_time)
+
+
+
+
 
 
