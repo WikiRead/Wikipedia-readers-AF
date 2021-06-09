@@ -48,7 +48,19 @@ for index, row in df_sub.iterrows():
 
 print(avg_time)
 
-freqs = get_image_data(df)
+freqs,precents = get_image_data(df)
+per_list = []
+for i in precents:
+    tup_list = precents[i]
+    s1 = 0
+    s2 = 0
+    for k in tup_list:
+        print(k[0],k[1],"values")
+        s1 += k[0]
+        s2+= 4000000
+    per_list.append(s1/s2)
+
+print(per_list)
 
 times = []
 
